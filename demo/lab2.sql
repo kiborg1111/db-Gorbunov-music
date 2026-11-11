@@ -19,14 +19,14 @@ JOIN tracks t ON t.album_id = a.id
 GROUP BY a.id, a.title
 HAVING count(*) > 1;
 
--- Треки, которые ни разу не прослушивались (LEFT JOIN + IS NULL (сироты))
+-- Треки, которые ни разу не прослушивались (LEFT JOIN + IS NULL)
 SELECT t.title AS track, a.title AS album
 FROM tracks t
 JOIN albums a ON a.id = t.album_id
 LEFT JOIN listenings l ON l.track_id = t.id
 WHERE l.id IS NULL;
 
--- Треки, которые ни разу не прослушивались (LEFT JOIN + IS NULL)
+-- Треки, которые ни разу не прослушивались (LEFT JOIN + IS NULL (сироты))
 SELECT t.title
 FROM tracks t
 LEFT JOIN listenings l ON l.track_id = t.id
@@ -88,7 +88,7 @@ DELETE FROM listenings WHERE listened_at < now() - interval '30 days';
 SELECT count(*) AS after FROM listenings WHERE listened_at < now() - interval '30 days';
 ROLLBACK;
 
--- Топ-3 самых длинных трека в каждом жанре (CTE (WITH) + оконная функция ROW_NUMBER)
+-- Доп задание 1. Топ-3 самых длинных трека в каждом жанре (CTE (WITH) + оконная функция ROW_NUMBER)
 WITH ranked_tracks AS (
     SELECT
         a.genre,
@@ -112,7 +112,7 @@ FROM listenings
 GROUP BY listened_at::date
 ORDER BY day;
 
--- По каждому жанру: сколько треков всего, сколько длиннее 300 сек, сколько короче 200 сек и процент длинных (GROUP BY + count(*) FILTER (WHERE ...) + доля в процентах)
+-- Доп задание 2. По каждому жанру: сколько треков всего, сколько длиннее 300 сек, сколько короче 200 сек и процент длинных (GROUP BY + count(*) FILTER (WHERE ...) + доля в процентах)
 SELECT
     a.genre,
     count(*) AS total_tracks,
