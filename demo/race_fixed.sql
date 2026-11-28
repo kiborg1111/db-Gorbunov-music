@@ -1,21 +1,21 @@
--- [setup]
-DELETE FROM playlist_tracks WHERE playlist_id = 1 AND track_id NOT IN (3, 7, 13);
+-- [setup] Оставляем 2 трека
+DELETE FROM playlist_tracks WHERE playlist_id = 1 AND track_id NOT IN (3, 7);
 
--- [A]
+-- [A] Добавляем 3-й трек и блокируем
 BEGIN;
-SELECT add_track_safe(1, 1, 4);
+SELECT add_track_safe(1, 1, 3);
 
--- [B]
+-- [B] Ждёт, а после COMMIT окна A получит ошибку
 BEGIN;
-SELECT add_track_safe(1, 2, 5);
 -- expect: blocked
+-- expect: error "уже 3 трека"
+SELECT add_track_safe(1, 2, 4);
 
 -- [A]
 COMMIT;
 
 -- [B]
--- expect: error "уже 3 трека"
-COMMIT;
+ROLLBACK;
 
 -- [check]
 -- expect: true

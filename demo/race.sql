@@ -1,15 +1,13 @@
--- [setup] Оставляем в плейлисте 1 место (максимум 3 трека)
-DELETE FROM playlist_tracks WHERE playlist_id = 1 AND track_id NOT IN (3, 7, 13);
+-- [setup] Оставляем 2 трека
+DELETE FROM playlist_tracks WHERE playlist_id = 1 AND track_id NOT IN (3, 7);
 
--- [A] Окно A добавляет 4-й трек
+-- [A]
 BEGIN;
-INSERT INTO playlist_tracks (playlist_id, track_id, position)
-VALUES (1, 1, 4);
+INSERT INTO playlist_tracks (playlist_id, track_id, position) VALUES (1, 1, 3);
 
--- [B] Окно B в тот же момент добавляет ещё один
+-- [B]
 BEGIN;
-INSERT INTO playlist_tracks (playlist_id, track_id, position)
-VALUES (1, 2, 5);
+INSERT INTO playlist_tracks (playlist_id, track_id, position) VALUES (1, 2, 4);
 
 -- [A]
 COMMIT;
@@ -17,7 +15,7 @@ COMMIT;
 -- [B]
 COMMIT;
 
--- [check] В плейлисте не больше 3 треков?
+-- [check]
 -- expect: false
 SELECT count(*) <= 3 FROM playlist_tracks WHERE playlist_id = 1;
 

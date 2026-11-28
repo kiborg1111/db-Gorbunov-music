@@ -5,8 +5,7 @@ AS $$
 DECLARE
     v_count integer;
 BEGIN
-    -- Блокируем плейлист до конца транзакции
-    PERFORM 1 FROM playlists WHERE id = p_playlist_id FOR UPDATE;
+    SELECT 1 INTO v_dummy FROM playlists WHERE id = p_playlist_id FOR UPDATE;
 
     SELECT count(*) INTO v_count
     FROM playlist_tracks
